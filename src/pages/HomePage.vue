@@ -4,11 +4,13 @@
     <main class="home-page__content">
       <HeroSlider :filmsData="releaseFilms" />
     </main>
+    <Footer />
   </div>
 </template>
 
 <script>
 import { getUpcomingMovies } from '@/api/movieApi';
+import Footer from '@/components/sections/Footer.vue';
 
 
 import NavBar from "@/components/sections/NavBar.vue";
@@ -17,7 +19,8 @@ import HeroSlider from "@/components/sliders/HeroSlider.vue";
 export default {
   components: {
     NavBar,
-    HeroSlider
+    HeroSlider,
+    Footer,
   },
   data() {
     return {
@@ -54,4 +57,5 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+</style>

@@ -1,9 +1,19 @@
 <template>
-  <div class="nav-bar">
-    <div class="nav-bar__logo">
-      <img src="@/assets/images/Logo.svg" alt="logo" />
+  <header class="nav-bar">
+    <div class="nav-bar__logo-container">
+      <img src="@/assets/images/Logo.svg" alt="logo" class="nav-bar__logo" />
     </div>
-    <nav class="nav-bar__navigation">
+
+    <button class="nav-bar__burger" @click="toggleMenu">
+      <img src="@/assets/images/icons/burgerMenu.svg" alt="" />
+    </button>
+
+    <nav
+      :class="[
+        'nav-bar__navigation',
+        { 'nav-bar__navigation--open': isMenuOpen },
+      ]"
+    >
       <ul class="nav-bar__list">
         <li class="nav-bar__item nav-bar__item--active">
           <router-link to="/">Home</router-link>
@@ -15,14 +25,26 @@
         <li class="nav-bar__item">Subscriptions</li>
       </ul>
     </nav>
+
     <div class="nav-bar__tools">
       <img src="@/assets/images/icons/search.svg" alt="search" />
     </div>
-  </div>
+  </header>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      isMenuOpen: false,
+    };
+  },
+  methods: {
+    toggleMenu() {
+      this.isMenuOpen = !this.isMenuOpen;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -31,6 +53,22 @@ export default {};
   justify-content: space-between;
   align-items: center;
   gap: 15px;
+  position: relative;
+  z-index: 100;
+
+  &__logo-container {
+    width: 199px;
+    @media (max-width: 1500px) {
+      width: 165px;
+    }
+    @media (max-width: 600px) {
+      width: 116px;
+    }
+  }
+
+  &__logo {
+    width: 100%;
+  }
 
   &__list {
     display: flex;
@@ -42,6 +80,7 @@ export default {};
     padding: 10px 40px;
     border-radius: 12px;
   }
+
   &__item {
     font-weight: 500;
     padding: 14px 24px;
@@ -49,6 +88,65 @@ export default {};
     cursor: pointer;
     &--active {
       background-color: rgba(26, 26, 26, 1);
+    }
+  }
+
+  &__tools img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+  }
+
+  &__burger {
+    display: none;
+    border-radius: 6px;
+    border: 3px solid #262626;
+    cursor: pointer;
+    padding: 12px;
+    background-color: #1A1A1A;
+
+    @media (max-width: 900px) {
+      display: block;
+    }
+  }
+
+  &__navigation {
+    @media (max-width: 900px) {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background-color: rgba(15, 15, 15, 1);
+      transform: translateY(-200%);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      border-top: 2px solid rgba(31, 31, 31, 1);
+
+      &--open {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .nav-bar__list {
+        flex-direction: column;
+        gap: 10px;
+        padding: 20px;
+        border: none;
+        background: none;
+      }
+
+      .nav-bar__item {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  }
+
+  @media (max-width: 900px) {
+    .nav-bar__tools {
+      display: none;
     }
   }
 }
