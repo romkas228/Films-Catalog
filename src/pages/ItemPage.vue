@@ -70,19 +70,21 @@
         </div>
       </div>
     </div>
-    <AppFooter />
+    <SectionSlider :films-data="similarMovies" section-title="Similar" />
+    <app-footer />
   </div>
 </template>
 
 <script>
 import NavBar from "@/components/sections/NavBar.vue";
 import AppFooter from "@/components/sections/AppFooter.vue";
-import { getDetailsMovies } from "@/api/movieApi";
+import { getDetailsMovies, getDiscoverMovies } from "@/api/movieApi";
+import SectionSlider from "@/components/sliders/SectionSlider.vue";
 
 export default {
-  components: { NavBar, AppFooter },
+  components: { NavBar, AppFooter, SectionSlider },
   data() {
-    return { itemData: null };
+    return { itemData: null, similarMovies: [] };
   },
   mounted() {
     this.loadItemDetails();
@@ -146,12 +148,30 @@ export default {
     },
   },
   methods: {
+    async loadSimilarMovies() {
+      try {
+        const genresIds = this.itemData?.genres?.map((genre) => genre.id);
+        if (!genresIds?.length) return;
+
+        const { response } = await getDiscoverMovies({
+          with_genres: genresIds.join(','),
+          page: 1,
+        });
+
+        this.similarMovies = response.filter(
+          (movie) => movie.id !== this.itemData.id
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    },
     async loadItemDetails() {
       try {
         const movieId = this.$route.params.id;
         const response = await getDetailsMovies(movieId);
         console.log("API response:", response);
         this.itemData = response;
+        await this.loadSimilarMovies();
       } catch (error) {
         console.error("Error loading movie details:", error);
       }
