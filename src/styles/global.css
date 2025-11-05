@@ -1,0 +1,18 @@
+body {
+  background-color: rgb(20, 20, 20);
+  color: white;
+  font-weight: 400;
+}
+
+.page__container {
+  max-width: 1480px;
+  margin: 15px auto;
+  padding: 0 15px;
+  min-height: 100vh;
+
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
