@@ -15,14 +15,18 @@
       ]"
     >
       <ul class="nav-bar__list">
-        <li class="nav-bar__item nav-bar__item--active">
+        <li class="nav-bar__item">
           <router-link to="/">Home</router-link>
         </li>
         <li class="nav-bar__item">
           <router-link to="/catalog">Catalog</router-link>
         </li>
-        <li class="nav-bar__item">Support</li>
-        <li class="nav-bar__item">Subscriptions</li>
+        <li class="nav-bar__item">
+          <router-link to="/support">Support</router-link>
+        </li>
+        <li class="nav-bar__item">
+          <router-link to="/subscriptions">Subscriptions</router-link>
+        </li>
       </ul>
     </nav>
 
@@ -49,6 +53,8 @@ export default {
 
 <style lang="scss" scoped>
 .nav-bar {
+  padding-top: 15px;
+  margin-bottom: 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -83,10 +89,18 @@ export default {
 
   &__item {
     font-weight: 500;
-    padding: 14px 24px;
-    border-radius: 8px;
-    cursor: pointer;
-    &--active {
+
+    a {
+      display: block;
+      padding: 14px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    a.router-link-exact-active,
+    a.router-link-active {
       background-color: rgba(26, 26, 26, 1);
     }
   }

@@ -3,32 +3,48 @@
     <nav-bar />
     <main class="home-page__content">
       <HeroSlider :filmsData="releaseFilms" />
+
+      <SectionSlider :filmsData="popularFilms" sectionTitle="Popular Films"/>
+
+      <SectionSlider :filmsData="popularSeries" sectionTitle="Popular Series"/>
+
+      <trial-banner />
     </main>
-    <Footer />
+    <app-footer />
   </div>
 </template>
 
 <script>
-import { getUpcomingMovies } from '@/api/movieApi';
-import Footer from '@/components/sections/Footer.vue';
-
-
+import {
+  getUpcomingMovies,
+  getPopularMovies,
+  getPopularSeries,
+} from "@/api/movieApi";
+import AppFooter from "@/components/sections/AppFooter.vue";
 import NavBar from "@/components/sections/NavBar.vue";
+import TrialBanner from "@/components/sections/TrialBanner.vue";
 import HeroSlider from "@/components/sliders/HeroSlider.vue";
+import SectionSlider from "@/components/sliders/SectionSlider.vue";
 
 export default {
   components: {
     NavBar,
     HeroSlider,
-    Footer,
+    SectionSlider,
+    AppFooter,
+    TrialBanner,
   },
   data() {
     return {
       releaseFilms: [],
-    }
+      popularFilms: [],
+      popularSeries: [],
+    };
   },
   mounted() {
     this.loadReleaseFilms();
+    this.loadPopularFilms();
+    this.loadPopularSeries();
   },
   methods: {
     filterValidMovies(movies) {
@@ -51,6 +67,34 @@ export default {
         this.releaseFilms = filtered.slice(0, 10);
       } catch (error) {
         console.error("Error loading upcoming movies:", error);
+      }
+    },
+
+    async loadPopularFilms() {
+      try {
+        const response = await getPopularMovies();
+        if (!response || !Array.isArray(response)) {
+          console.error("Invalid data from API");
+          return;
+        }
+        const filtered = this.filterValidMovies(response);
+        this.popularFilms = filtered.slice(0, 10);
+      } catch (error) {
+        console.error("Error loading popular movies:", error);
+      }
+    },
+
+    async loadPopularSeries() {
+      try {
+        const response = await getPopularSeries();
+        if (!response || !Array.isArray(response)) {
+          console.error("Invalid data from API");
+          return;
+        }
+        const filtered = this.filterValidMovies(response);
+        this.popularSeries = filtered.slice(0, 10);
+      } catch (error) {
+        console.error("Error loading popular series:", error);
       }
     },
   },

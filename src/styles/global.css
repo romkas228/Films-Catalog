@@ -14,10 +14,15 @@ body {
   flex-direction: column;
   min-height: 100vh;
   max-width: 1480px;
-  margin: 0 auto;
-  padding: 0 15px;
+  margin: 0px auto;
+  padding-inline: 15px;
 }
-
+.login-page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 a {
   color: inherit;
   text-decoration: inherit;

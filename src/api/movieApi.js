@@ -58,18 +58,6 @@ export async function getPopularSeries() {
   return data.results;
 }
 
-// Фільми що зараз в кінотеатрах
-export async function getNowPlayingMovies() {
-  const data = await apiRequest("movie/now_playing");
-  return data.results;
-}
-
-// Трендові фільми за день
-export async function getTrendingMovies() {
-  const data = await apiRequest("trending/movie/day");
-  return data.results;
-}
-
 // Список жанрів
 export async function getGenreMovies() {
   const data = await apiRequest("genre/movie/list");
@@ -92,6 +80,7 @@ export async function getDiscoverMovies(filters = {}) {
   return {
     response: data.results,
     total_pages: data.total_pages,
+    total_results: data.total_results,
   };
 }
 

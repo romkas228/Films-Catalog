@@ -1,6 +1,8 @@
 import AuthorizationLoginPage from '@/pages/AuthorizationLoginPage.vue'
 import AuthorizationRegistrationPage from '@/pages/AuthorizationRegistrationPage.vue'
 import CatalogPage from '@/pages/CatalogPage.vue'
+import ItemPage from '@/pages/ItemPage.vue'
+
 import HomePage from '@/pages/HomePage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -14,6 +16,10 @@ const router = createRouter({
     {
       path: '/catalog',
       component: CatalogPage,
+    },
+    {
+      path: '/item/:id',
+      component: ItemPage,
     },
     {
       path: '/login',

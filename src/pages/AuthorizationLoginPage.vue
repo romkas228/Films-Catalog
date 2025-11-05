@@ -1,15 +1,20 @@
 <template>
-  <div>
-    AuthorizationLoginPage
+  <div class="login-page-wrapper">
+    <AuthForm :type="'login'"/>
   </div>
 </template>
 
 <script>
-  export default {
-    
-  }
+import AuthForm from '@/components/sections/AuthForm.vue';
+
+
+
+export default {
+  components: {
+    AuthForm,
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 </style>

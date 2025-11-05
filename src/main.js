@@ -6,7 +6,7 @@ import router from './router'
 
 import './styles/reset.css';
 import './styles/global.css';
-
+import './styles/swiper.css';
 
 
 const app = createApp(App)
