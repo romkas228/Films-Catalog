@@ -53,7 +53,6 @@
             </span>
           </div>
 
-          <!-- Додаткова інформація -->
           <div class="item-page__extra">
             <p><strong>Runtime:</strong> {{ getRuntime }}</p>
             <p><strong>Status:</strong> {{ getStatus }}</p>

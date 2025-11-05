@@ -15,8 +15,6 @@
       <h3 class="section-card__title">
         {{ getTitle }}
       </h3>
-
-      <!-- {{ item }} -->
     </div>
   </div>
 </template>

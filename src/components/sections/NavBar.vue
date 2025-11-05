@@ -117,7 +117,7 @@ export default {
     border: 3px solid #262626;
     cursor: pointer;
     padding: 12px;
-    background-color: #1A1A1A;
+    background-color: #1a1a1a;
 
     @media (max-width: 900px) {
       display: block;

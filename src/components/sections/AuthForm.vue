@@ -9,7 +9,7 @@
         {{ isLogin ? "Sign in" : "Sign up" }}
       </h2>
 
-      <!-- Email -->
+
       <div class="auth-form__field">
         <label for="email" class="auth-form__label">Email</label>
         <input
@@ -22,7 +22,6 @@
         />
       </div>
 
-      <!-- Username (тільки для реєстрації) -->
       <div v-if="!isLogin" class="auth-form__field">
         <label for="username" class="auth-form__label">Name</label>
         <input
@@ -35,7 +34,6 @@
         />
       </div>
 
-      <!-- Password -->
       <div class="auth-form__field">
         <label for="password" class="auth-form__label">Password</label>
         <input
@@ -48,7 +46,6 @@
         />
       </div>
 
-      <!-- Confirm password (тільки для реєстрації) -->
       <div v-if="!isLogin" class="auth-form__field">
         <label for="confirm" class="auth-form__label">Confirm password</label>
         <input
@@ -61,32 +58,30 @@
         />
       </div>
 
-      <!-- Button -->
       <button type="submit" class="auth-form__button">
         {{ isLogin ? "Sign in" : "Register" }}
       </button>
 
-      <!-- Footer -->
       <div class="auth-form__footer">
         <p v-if="isLogin">
           Don't have an account?
-          <a
-            href="#"
+          <router-link
+            to="/register"
             class="auth-form__link"
             @click.prevent="$emit('switch', 'register')"
           >
             Register
-          </a>
+          </router-link>
         </p>
         <p v-else>
           Do you already have an account?
-          <a
-            href="#"
+          <router-link
+            to="/login"
             class="auth-form__link"
             @click.prevent="$emit('switch', 'login')"
           >
             Sign in
-          </a>
+          </router-link>
         </p>
       </div>
     </form>
@@ -98,7 +93,7 @@ export default {
   props: {
     type: {
       type: String,
-      default: "login", // або "register"
+      default: "login", 
     },
   },
   data() {
@@ -119,16 +114,14 @@ export default {
   methods: {
     handleSubmit() {
       if (!this.isLogin && this.form.password !== this.form.confirmPassword) {
-        alert("Паролі не співпадають!");
+        alert("Passwords do not match!");
         return;
       }
 
       if (this.isLogin) {
-        console.log("Логін:", this.form.email, this.form.password);
-        // login API call
+        console.log("Login:", this.form.email, this.form.password);
       } else {
-        console.log("Реєстрація:", this.form);
-        // register API call
+        console.log("Register:", this.form);
       }
     },
   },
