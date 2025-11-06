@@ -19,22 +19,15 @@
 npm install
 ```
 
-2. Додайте `.env` локально :
-```bash
-# створіть файл .env в корені проєкту
-# .env
-VITE_TMDB_KEY='eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3MmMzZjlmNmQ2ZGRlODQyNGZiYjIwNzE0NTg2YzM2OSIsIm5iZiI6MTc2MjI2NzA3Ni4wNjcwMDAyLCJzdWIiOiI2OTBhMGZjNGMwNmE5NDU1MDNkYjhmODQiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.3vdmcsYz9L-LZ8Dw5SFKJ97_WK6b5DHyBlClRNDKb-o'
 
-```
-
-3.  Мок-сервер для авторизації
+2.  Мок-сервер для авторизації
 
 ```bash
 cd server
 npm install
 ```
 
-4. Запустіть мок-сервер:
+3. Запустіть мок-сервер:
 ```bash
 # з кореня проєкту
 node server/index.js
