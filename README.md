@@ -29,7 +29,6 @@ VITE_TMDB_KEY=ВАШ_КЛЮЧ_TMDB
 3.  Мок-сервер для авторизації
 
 ```bash
-# якщо сервер має власний package.json:
 cd server
 npm install
 ```
