@@ -281,5 +281,6 @@ export default {
     font-size: 25px;
     outline: none;
   }
+
 }
 </style>

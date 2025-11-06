@@ -52,7 +52,9 @@ export default {
   },
   methods: {
     handlerOpenItem(id) {
-      this.$router.push(`/item/${id}`);
+      const type =
+        this.item.first_air_date || this.item.original_name ? "tv" : "movie";
+      this.$router.push({ path: `/item/${id}`, query: { type } });
     },
   },
 };
@@ -94,7 +96,7 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    @media (max-width:400px) {
+    @media (max-width: 400px) {
       padding-bottom: 30px;
     }
   }

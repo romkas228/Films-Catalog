@@ -80,6 +80,15 @@ export async function getDetailsMovies(movie_id) {
   return await apiRequest(`movie/${movie_id}`);
 }
 
+export async function getSimilarMovies(movie_id) {
+  if (!movie_id) return { results: [] };
+  return await apiRequest(`movie/${movie_id}/similar`)
+}
+export async function getSimilarTV(series_id) {
+  if (!series_id) return { results: [] };
+  return await apiRequest(`tv/${series_id}/similar`)
+}
+
 export async function getDetailsTV(tv_id) {
   return await apiRequest(`tv/${tv_id}`);
 }

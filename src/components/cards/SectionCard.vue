@@ -56,7 +56,9 @@ export default {
   },
   methods: {
     handlerOpenItem(id) {
-      this.$router.push(`/item/${id}`);
+      const type =
+        (this.item.first_air_date || this.item.original_name ? "tv" : "movie");
+      this.$router.push({ path: `/item/${id}`, query: { type } });
     },
   },
 };
