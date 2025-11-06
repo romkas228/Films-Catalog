@@ -1,38 +1,54 @@
-# films-catalog
+# Films-Catalog — Запуск локально
 
-This template should help get you started developing with Vue 3 in Vite.
 
-## Recommended IDE Setup
+## Структура (коротко)
+- `src/` — фронтенд (Vue)
+- `server/` — локальний мок-сервер (Express) для auth (реєстрація / логін / me)
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-## Recommended Browser Setup
+Приклад файлу для розгортання/передачі:
+- Створіть `.env` на вашій машині або у CI з:
+  - `VITE_TMDB_KEY=your_tmdb_key_here`
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+---
 
-## Customize configuration
+## Підготовка (швидко)
 
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
+1. В корені проєкту:
+```bash
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+2. Додайте `.env` локально :
+```bash
+# створіть файл .env в корені проєкту
+# .env
+VITE_TMDB_KEY=ВАШ_КЛЮЧ_TMDB
+```
 
-```sh
+3.  Мок-сервер для авторизації
+
+```bash
+# якщо сервер має власний package.json:
+cd server
+npm install
+```
+
+4. Запустіть мок-сервер:
+```bash
+# з кореня проєкту
+node server/index.js
+```
+
+Демо-юзер (якщо є `server/users.json` початково):
+- email: `demo@demo.com`
+- password: `password123`
+
+---
+
+## Запуск фронтенду (dev)
+```bash
+# в корені проєкту
 npm run dev
 ```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+---
