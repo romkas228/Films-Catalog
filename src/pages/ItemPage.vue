@@ -1,7 +1,9 @@
 <template>
   <div class="item-page page__container">
     <nav-bar />
-    <div v-if="itemData" class="item-page__content">
+    <div v-if="loading">Loading...</div>
+
+    <div v-else-if="itemData" class="item-page__content">
       <div
         class="item-page__head"
         :style="{
@@ -56,10 +58,10 @@
           <div class="item-page__extra">
             <p><strong>Runtime:</strong> {{ getRuntime }}</p>
             <p><strong>Status:</strong> {{ getStatus }}</p>
-            <p v-if="itemData.budget">
+            <p v-if="itemData.budget && mediaType === 'movie'">
               <strong>Budget:</strong> ${{ formatNumber(itemData.budget) }}
             </p>
-            <p v-if="itemData.revenue">
+            <p v-if="itemData.revenue && mediaType === 'movie'">
               <strong>Box office:</strong> ${{ formatNumber(itemData.revenue) }}
             </p>
           </div>
@@ -69,8 +71,9 @@
           </p>
         </div>
       </div>
+      <SectionSlider :films-data="similarMovies" section-title="Similar" />
     </div>
-    <SectionSlider :films-data="similarMovies" section-title="Similar" />
+
     <app-footer />
   </div>
 </template>
@@ -78,22 +81,30 @@
 <script>
 import NavBar from "@/components/sections/NavBar.vue";
 import AppFooter from "@/components/sections/AppFooter.vue";
-import { getDetailsMovies, getDiscoverMovies } from "@/api/movieApi";
+import {
+  getDetailsMovies,
+  getDetailsTV,
+  getDiscoverMovies,
+} from "@/api/movieApi";
 import SectionSlider from "@/components/sliders/SectionSlider.vue";
 
 export default {
   components: { NavBar, AppFooter, SectionSlider },
   data() {
-    return { itemData: null, similarMovies: [] };
+    return {
+      itemData: null,
+      similarMovies: [],
+      loading: false,
+      error: null,
+      mediaType: null, // 'movie' or 'tv'
+    };
   },
   mounted() {
     this.loadItemDetails();
-    console.log();
   },
   watch: {
-    "$route.params.id"() {
-      this.loadItemDetails();
-    },
+    "$route.params.id": "loadItemDetails",
+    "$route.query.type": "loadItemDetails",
   },
   computed: {
     getProductionCountries() {
@@ -103,13 +114,16 @@ export default {
       return this.itemData?.genres || [];
     },
     getReleaseYear() {
-      return this.itemData?.release_date?.slice(0, 4) || "N/A";
+      const date =
+        this.itemData?.release_date || this.itemData?.first_air_date || null;
+      return date ? date.slice(0, 4) : "N/A";
     },
     getPosterField() {
       return (
         this.itemData?.poster_path ||
         this.itemData?.backdrop_path ||
-        this.itemData?.posterUrl
+        this.itemData?.posterUrl ||
+        null
       );
     },
     getPosterUrl() {
@@ -127,6 +141,7 @@ export default {
         this.itemData?.title ||
         this.itemData?.original_title ||
         this.itemData?.name ||
+        this.itemData?.original_name ||
         "Untitled"
       );
     },
@@ -134,27 +149,47 @@ export default {
       return this.itemData?.overview || "No description available.";
     },
     getRating() {
-      return this.itemData?.vote_average?.toFixed(1);
+      const val = this.itemData?.vote_average ?? this.itemData?.rating;
+      return val !== undefined && val !== null ? Number(val).toFixed(1) : "-";
     },
     getVoteCount() {
       return this.itemData?.vote_count || 0;
     },
     getRuntime() {
+      // Movie runtime is in minutes; TV may have episode_run_time array
       const min = this.itemData?.runtime;
-      return min && `${Math.floor(min / 60)} hour ${min % 60} min`;
+      if (min) {
+        return `${Math.floor(min / 60)} hour ${min % 60} min`;
+      }
+      // TV: episode_run_time is array of runtimes (minutes)
+      const tvRun = this.itemData?.episode_run_time;
+      if (Array.isArray(tvRun) && tvRun.length) {
+        const m = tvRun[0];
+        return `${Math.floor(m / 60)} hour ${m % 60} min`;
+      }
+      return "N/A";
     },
     getStatus() {
-      return this.itemData?.status;
+      return this.itemData?.status || "N/A";
     },
   },
   methods: {
     async loadSimilarMovies() {
       try {
+        // only fetch similar via discover for movies (current helper is for movies)
+        if (this.mediaType !== "movie") {
+          this.similarMovies = [];
+          return;
+        }
+
         const genresIds = this.itemData?.genres?.map((genre) => genre.id);
-        if (!genresIds?.length) return;
+        if (!genresIds?.length) {
+          this.similarMovies = [];
+          return;
+        }
 
         const { response } = await getDiscoverMovies({
-          with_genres: genresIds.join(','),
+          with_genres: genresIds.join(","),
           page: 1,
         });
 
@@ -162,22 +197,80 @@ export default {
           (movie) => movie.id !== this.itemData.id
         );
       } catch (error) {
-        console.error(error);
+        console.error("Error loading similar movies:", error);
+        this.similarMovies = [];
       }
     },
     async loadItemDetails() {
+      this.itemData = null;
+      this.similarMovies = [];
+      this.loading = true;
+      this.error = null;
+      const id = this.$route.params.id;
+      const routeType = this.$route.query?.type;
+
+      if (!id) {
+        this.error = "No item id provided";
+        this.loading = false;
+        return;
+      }
+
+      // If explicit type provided in query, use it
+      if (routeType === "tv" || routeType === "movie") {
+        try {
+          const data =
+            routeType === "tv"
+              ? await getDetailsTV(id)
+              : await getDetailsMovies(id);
+          this.itemData = data;
+          this.mediaType = routeType;
+          await this.loadSimilarMovies();
+        } catch (e) {
+          console.error(e);
+          this.error = "Failed to load item details";
+        } finally {
+          this.loading = false;
+        }
+        return;
+      }
+
+      // No explicit type — try movie first, then tv
       try {
-        const movieId = this.$route.params.id;
-        const response = await getDetailsMovies(movieId);
-        console.log("API response:", response);
-        this.itemData = response;
-        await this.loadSimilarMovies();
-      } catch (error) {
-        console.error("Error loading movie details:", error);
+        const movieData = await getDetailsMovies(id);
+        if (movieData && (movieData.title || movieData.original_title)) {
+          this.itemData = movieData;
+          this.mediaType = "movie";
+          await this.loadSimilarMovies();
+          this.loading = false;
+          return;
+        }
+      } catch (movieErr) {
+        // try tv below
+      }
+
+      try {
+        const tvData = await getDetailsTV(id);
+        if (
+          tvData &&
+          (tvData.name ||
+            tvData.original_name ||
+            tvData.number_of_seasons !== undefined)
+        ) {
+          this.itemData = tvData;
+          this.mediaType = "tv";
+          await this.loadSimilarMovies();
+          return;
+        }
+        this.error = "Item not found";
+      } catch (tvErr) {
+        console.error(tvErr);
+        this.error = "Item not found";
+      } finally {
+        this.loading = false;
       }
     },
     formatNumber(num) {
-      return num.toLocaleString("en-US");
+      return num?.toLocaleString("en-US") || num;
     },
   },
 };
@@ -297,5 +390,8 @@ export default {
     color: #f3f3f3;
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
   }
+}
+.error {
+  color: #b00020;
 }
 </style>

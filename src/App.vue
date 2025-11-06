@@ -1,8 +1,5 @@
 <script>
 export default {
-  mounted() {
-    console.log('1346326');
-  },
 };
 </script>
 

@@ -4,11 +4,5 @@
     "email": "demo@demo.com",
     "password": "password123",
     "name": "Demo User"
-  },
-  {
-    "id": 2,
-    "email": "superpupergamer06@gmail.com",
-    "password": "123456",
-    "name": "Romkas"
   }
 ]

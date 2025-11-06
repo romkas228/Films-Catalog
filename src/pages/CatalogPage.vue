@@ -245,6 +245,9 @@ export default {
     &-wrapper {
       display: flex;
       gap: 18px;
+      @media (max-width: 800px) {
+        flex-direction: column;
+      }
     }
     &-label {
       font-size: 22px;

@@ -5,7 +5,11 @@
       :disabled="currentPage === 1"
       @click="handlePageClick(currentPage - 1)"
     >
-      <img src="@/assets/images/icons/arrow-left.svg" alt="left" />
+      <img
+        src="@/assets/images/icons/arrow-left.svg"
+        class="nav-pagination__icon-arrow"
+        alt="left"
+      />
     </button>
     <ul class="nav-pagination__list">
       <li
@@ -23,7 +27,11 @@
       :disabled="currentPage === totalPages"
       @click="handlePageClick(currentPage + 1)"
     >
-      <img src="@/assets/images/icons/arrow-right.svg" alt="right" />
+      <img
+        src="@/assets/images/icons/arrow-right.svg"
+        class="nav-pagination__icon-arrow"
+        alt="right"
+      />
     </button>
   </div>
 </template>
@@ -116,6 +124,9 @@ export default {
     gap: 8px;
     list-style: none;
     justify-content: center;
+    @media (max-width: 500px) {
+      display: none;
+    }
   }
 
   &__item {
@@ -128,6 +139,9 @@ export default {
     min-width: 44px;
     text-align: center;
     transition: all 0.2s;
+    @media (max-width: 500px) {
+      min-width: 20px;
+    }
 
     &--active {
       background-color: rgba(229, 0, 0, 1);

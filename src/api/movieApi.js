@@ -80,6 +80,10 @@ export async function getDetailsMovies(movie_id) {
   return await apiRequest(`movie/${movie_id}`);
 }
 
+export async function getDetailsTV(tv_id) {
+  return await apiRequest(`tv/${tv_id}`);
+}
+
 export async function searchMovies(query, page = 1) {
   if (!query) return { results: [] };
   const defaultFilters = {

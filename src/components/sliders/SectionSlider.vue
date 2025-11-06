@@ -18,7 +18,7 @@
         prevEl: '.swiper-button-right',
       }"
     >
-      <swiper-slide v-for="(item, index) in filmsData" :key="index">
+      <swiper-slide class="swiper-slide"  v-for="(item, index) in filmsData" :key="index">
         <section-card :item="item" />
       </swiper-slide>
 
@@ -82,9 +82,9 @@ export default {
     getSlidesPerView() {
       return this.windowWidth >= 1480
         ? 4
-        : this.windowWidth > 1150
+        : this.windowWidth > 1000
         ? 3
-        : this.windowWidth > 850
+        : this.windowWidth > 700
         ? 2
         : 1;
     },
@@ -109,6 +109,9 @@ export default {
 <style scoped lang="scss">
 .section__slider {
   margin-bottom: 102px;
+  
+
+  
   &-top {
     margin-bottom: 16px;
   }
@@ -123,14 +126,19 @@ export default {
     display: flex;
     align-items: center;
     justify-content: start;
+    gap: 5px;
     background-color: rgba(15, 15, 15, 1);
     padding: 16px;
     width: max-content;
     border: 1px solid rgba(31, 31, 31, 1);
     border-radius: 8px;
+    
   }
   &-steps {
     max-width: max-content;
+    @media (max-width: 500px){
+      display: none;
+    }
   }
   &-button {
     width: 56px;

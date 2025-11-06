@@ -21,12 +21,6 @@
         <li class="nav-bar__item">
           <router-link to="/catalog">Catalog</router-link>
         </li>
-        <li class="nav-bar__item">
-          <router-link to="/support">Support</router-link>
-        </li>
-        <li class="nav-bar__item">
-          <router-link to="/subscriptions">Subscriptions</router-link>
-        </li>
       </ul>
     </nav>
 
