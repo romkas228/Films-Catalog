@@ -176,7 +176,7 @@ export default {
   methods: {
     async loadSimilarMovies() {
       try {
-        // only fetch similar via discover for movies (current helper is for movies)
+
         if (this.mediaType !== "movie") {
           this.similarMovies = [];
           return;
@@ -215,7 +215,7 @@ export default {
         return;
       }
 
-      // If explicit type provided in query, use it
+
       if (routeType === "tv" || routeType === "movie") {
         try {
           const data =
@@ -234,7 +234,7 @@ export default {
         return;
       }
 
-      // No explicit type — try movie first, then tv
+
       try {
         const movieData = await getDetailsMovies(id);
         if (movieData && (movieData.title || movieData.original_title)) {
@@ -245,7 +245,7 @@ export default {
           return;
         }
       } catch (movieErr) {
-        // try tv below
+
       }
 
       try {
