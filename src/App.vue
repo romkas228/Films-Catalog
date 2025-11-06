@@ -1,8 +1,14 @@
-<script setup></script>
+<script>
+export default {
+  mounted() {
+    console.log('1346326');
+  },
+};
+</script>
 
 <template>
   <div class="app">
-    <router-view/>
+    <router-view />
   </div>
 </template>
 

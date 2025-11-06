@@ -9,7 +9,6 @@
         {{ isLogin ? "Sign in" : "Sign up" }}
       </h2>
 
-
       <div class="auth-form__field">
         <label for="email" class="auth-form__label">Email</label>
         <input
@@ -58,9 +57,14 @@
         />
       </div>
 
-      <button type="submit" class="auth-form__button">
-        {{ isLogin ? "Sign in" : "Register" }}
+      <button type="submit" class="auth-form__button" :disabled="loading">
+        <span v-if="loading">{{
+          isLogin ? "Signing in..." : "Registering..."
+        }}</span>
+        <span v-else>{{ isLogin ? "Sign in" : "Register" }}</span>
       </button>
+
+      <p v-if="error" class="auth-form__error">{{ error }}</p>
 
       <div class="auth-form__footer">
         <p v-if="isLogin">
@@ -89,11 +93,13 @@
 </template>
 
 <script>
+import { login, register } from "@/api/authApi";
+
 export default {
   props: {
     type: {
       type: String,
-      default: "login", 
+      default: "login",
     },
   },
   data() {
@@ -104,6 +110,8 @@ export default {
         password: "",
         confirmPassword: "",
       },
+      loading: false,
+      error: null,
     };
   },
   computed: {
@@ -112,16 +120,37 @@ export default {
     },
   },
   methods: {
-    handleSubmit() {
+    async handleSubmit() {
+      this.error = null;
+
       if (!this.isLogin && this.form.password !== this.form.confirmPassword) {
-        alert("Passwords do not match!");
+        this.error = "Passwords do not match!";
         return;
       }
 
-      if (this.isLogin) {
-        console.log("Login:", this.form.email, this.form.password);
-      } else {
-        console.log("Register:", this.form);
+      this.loading = true;
+      try {
+        if (this.isLogin) {
+          const res = await login(this.form.email, this.form.password);
+          localStorage.setItem("auth_user", JSON.stringify(res.user));
+          localStorage.setItem("auth_token", res.token);
+          this.$emit("authenticated", res.user);
+          this.$router.push({ name: "Home" });
+        } else {
+          const res = await register(
+            this.form.email,
+            this.form.password,
+            this.form.username
+          );
+          localStorage.setItem("auth_user", JSON.stringify(res.user));
+          localStorage.setItem("auth_token", res.token);
+          this.$emit("authenticated", res.user);
+          this.$router.push({ name: "Home" });
+        }
+      } catch (err) {
+        this.error = err && err.error ? err.error : "Request failed";
+      } finally {
+        this.loading = false;
       }
     },
   },
@@ -202,6 +231,13 @@ export default {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(75, 108, 183, 0.3);
     }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
   }
 
   &__footer {
@@ -218,6 +254,13 @@ export default {
         text-decoration: underline;
       }
     }
+  }
+
+  &__error {
+    color: #b00020;
+    text-align: center;
+    font-size: 14px;
+    margin-top: -6px;
   }
 }
 </style>

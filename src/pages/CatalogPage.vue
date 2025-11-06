@@ -5,95 +5,110 @@
       <h2 class="catalog-page__title">Catalog Films</h2>
       <div class="catalog-page__box">
         <div class="catalog-page__filters">
-          <label class="catalog-page__filters-label" for="select-sort">
-            Sort
-            <div class="catalog-page__filters-box">
-              <select
-                class="catalog-page__select"
-                v-model="filtersConfig.sort_by"
-                name="select-sort"
-                id="select-sort"
-              >
-                <option class="catalog-page__option" value="original_title.asc">
-                  Name A-Z
-                </option>
-                <option
-                  class="catalog-page__option"
-                  value="original_title.desc"
+          <div class="catalog-page__filters-wrapper">
+            <label class="catalog-page__filters-label" for="select-sort">
+              Sort
+              <div class="catalog-page__filters-box">
+                <select
+                  class="catalog-page__select"
+                  v-model="filtersConfig.sort_by"
+                  name="select-sort"
+                  id="select-sort"
                 >
-                  Name Z-A
-                </option>
-                <option class="catalog-page__option" value="popularity.desc">
-                  Most Popular
-                </option>
-                <option class="catalog-page__option" value="popularity.asc">
-                  Least Popular
-                </option>
-                <option class="catalog-page__option" value="revenue.desc">
-                  Box Office High
-                </option>
-                <option class="catalog-page__option" value="revenue.asc">
-                  Box Office Low
-                </option>
-              </select>
-            </div>
-          </label>
+                  <option class="catalog-page__option" value="original_title.asc">
+                    Name A-Z
+                  </option>
+                  <option
+                    class="catalog-page__option"
+                    value="original_title.desc"
+                  >
+                    Name Z-A
+                  </option>
+                  <option class="catalog-page__option" value="popularity.desc">
+                    Most Popular
+                  </option>
+                  <option class="catalog-page__option" value="popularity.asc">
+                    Least Popular
+                  </option>
+                  <option class="catalog-page__option" value="revenue.desc">
+                    Box Office High
+                  </option>
+                  <option class="catalog-page__option" value="revenue.asc">
+                    Box Office Low
+                  </option>
+                </select>
+              </div>
+            </label>
+            <label
+              class="catalog-page__filters-label select-date"
+              for="select-date"
+            >
+              Date Release
+              <div class="catalog-page__filters-box">
+                <input
+                  class="catalog-page__input"
+                  v-model="filtersConfig['release_date.gte']"
+                  type="date"
+                />
+                <input
+                  class="catalog-page__input"
+                  v-model="filtersConfig['release_date.lte']"
+                  type="date"
+                />
+              </div>
+            </label>
+            <label
+              class="catalog-page__filters-label select-rating"
+              for="select-date"
+            >
+              Rating
+              <div class="catalog-page__filters-box">
+                <input
+                  class="catalog-page__input"
+                  v-model="filtersConfig['vote_average.gte']"
+                  type="number"
+                  min="0"
+                  max="10"
+                  step="0.1"
+                />
+                <input
+                  class="catalog-page__input"
+                  v-model="filtersConfig['vote_average.lte']"
+                  type="number"
+                  min="0"
+                  max="10"
+                  step="0.1"
+                />
+              </div>
+            </label>
+            <label
+              class="catalog-page__filters-label catalog-page__filters-label--checkbox"
+              for="select-without__photos"
+            >
+              Show unsorted without photos
+              <input
+                class="catalog-page__filters-checkbox"
+                type="checkbox"
+                v-model="enableFilter"
+                name="select-without__photos"
+              />
+            </label>
+          </div>
           <label
-            class="catalog-page__filters-label select-date"
-            for="select-date"
+            for="catalog-page__query-input"
+            class="catalog-page__filters-label catalog-page__filters-label--query"
           >
-            Date Release
-            <div class="catalog-page__filters-box">
-              <input
-                class="catalog-page__input"
-                v-model="filtersConfig['release_date.gte']"
-                type="date"
-              />
-              <input
-                class="catalog-page__input"
-                v-model="filtersConfig['release_date.lte']"
-                type="date"
-              />
-            </div>
-          </label>
-          <label
-            class="catalog-page__filters-label select-rating"
-            for="select-date"
-          >
-            Rating
-            <div class="catalog-page__filters-box">
-              <input
-                class="catalog-page__input"
-                v-model="filtersConfig['vote_average.gte']"
-                type="number"
-                min="0"
-                max="10"
-                step="0.1"
-              />
-              <input
-                class="catalog-page__input"
-                v-model="filtersConfig['vote_average.lte']"
-                type="number"
-                min="0"
-                max="10"
-                step="0.1"
-              />
-            </div>
-          </label>
-
-          <label
-            class="catalog-page__filters-label catalog-page__filters-label--checkbox"
-            for="select-without__photos"
-          >
-            Show unsorted without photos
+            Search
             <input
-              class="catalog-page__filters-checkbox"
-              type="checkbox"
-              v-model="enableFilter"
-              name="select-without__photos"
+              type="text"
+              name="catalog-page__query-input"
+              v-model="searchQuery"
+              class="catalog-page__input"
+              placeholder="Search..."
             />
           </label>
         </div>
+
         <div class="catalog-page__content">
           <list-card :filmsData="catalogFilms" />
         </div>
@@ -114,7 +129,7 @@ import NavPagination from "@/components/sections/NavPagination.vue";
 
 import ListCard from "@/components/sliders/ListCard.vue";
 
-import { getDiscoverMovies } from "@/api/movieApi";
+import { getDiscoverMovies, searchMovies } from "@/api/movieApi";
 
 export default {
   components: {
@@ -126,6 +141,7 @@ export default {
     return {
       catalogFilms: [],
       enableFilter: true,
+      searchQuery: "",
       filtersConfig: {
         sort_by: "popularity.desc",
         page: parseInt(this.$route.query.page) || 1,
@@ -153,6 +169,12 @@ export default {
         this.loadCatalogFilms();
       },
     },
+    searchQuery: {
+      handler() {
+        this.loadCatalogFilms();
+      },
+      immediate: false,
+    },
     "$route.query.page"(newPage) {
       this.filtersConfig.page = parseInt(newPage) || 1;
     },
@@ -177,18 +199,25 @@ export default {
 
     async loadCatalogFilms() {
       try {
-        const result = await getDiscoverMovies(this.filtersConfig);
-
-        if (result && result.response) {
-          const movies = this.enableFilter
-            ? this.filterValidMovies(result.response)
-            : result.response;
-
-          this.catalogFilms = movies;
-          this.totalPages = result.total_pages < 300 ? result.total_pages : 300;
-          this.totalResults = result.total_results;
-          console.log("this.totalResults", result);
+        let result;
+        if (this.searchQuery.trim()) {
+          result = await searchMovies(
+            this.searchQuery,
+            this.filtersConfig.page
+          );
+        } else {
+          result = await getDiscoverMovies(this.filtersConfig);
         }
+
+        const movies = result?.response || result?.results || [];
+        const filteredMovies = this.enableFilter
+          ? this.filterValidMovies(movies)
+          : result.response;
+
+        this.catalogFilms = filteredMovies;
+        this.totalPages = result.total_pages < 300 ? result.total_pages : 300;
+        this.totalResults = result.total_results;
+        console.log("this.totalResults", result);
       } catch (error) {
         console.error("Error loading catalog films:", error);
       }
@@ -206,13 +235,17 @@ export default {
   }
   &__filters {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 18px;
     background-color: rgb(26, 26, 26);
     border: 1px solid rgb(38, 38, 38);
     margin-bottom: 32px;
     padding: 24px 18px;
     border-radius: 12px;
+    &-wrapper {
+      display: flex;
+      gap: 18px;
+    }
     &-label {
       font-size: 22px;
 
@@ -220,6 +253,11 @@ export default {
         display: flex;
         align-items: center;
         gap: 8px;
+      }
+      &--query {
+        display: flex;
+        gap: 8px;
+        flex-direction: column;
       }
 
       input[type="checkbox"] {
@@ -235,9 +273,9 @@ export default {
     background-color: rgba(20, 20, 20, 1);
     color: #fff;
     border: 1px solid rgba(38, 38, 38, 1);
-    padding: 12px 8px;
-    border-radius: 4px;
-    font-size: 20px;
+    padding: 18px 15px;
+    border-radius: 18px;
+    font-size: 25px;
     outline: none;
   }
 }

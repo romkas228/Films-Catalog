@@ -1,8 +1,8 @@
 <template>
   <header class="nav-bar">
-    <div class="nav-bar__logo-container">
+    <router-link to="/" class="nav-bar__logo-container">
       <img src="@/assets/images/Logo.svg" alt="logo" class="nav-bar__logo" />
-    </div>
+    </router-link>
 
     <button class="nav-bar__burger" @click="toggleMenu">
       <img src="@/assets/images/icons/burgerMenu.svg" alt="" />
@@ -158,10 +158,10 @@ export default {
     }
   }
 
-  @media (max-width: 900px) {
+  
     .nav-bar__tools {
       display: none;
     }
-  }
+  
 }
 </style>
